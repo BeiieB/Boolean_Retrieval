@@ -1,6 +1,6 @@
 """
 get Shakespeare's Collected Works from http://www.rhymezone.com/r/gwic.cgi?Word=_&Path=shakespeare
-store them in specif directory
+store them in specific directory
 
 Author: Bei-Chen Li
 """

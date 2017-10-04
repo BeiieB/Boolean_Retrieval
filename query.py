@@ -108,7 +108,7 @@ if __name__ == "__main__":
     #     indexer.create_inverted_index()
     with open("doc_id.pkl", "rb") as in_file:
         doc_dictionary = pickle.load(in_file)
-    inp = input("Input query, separated by AND OR NOT:")
+    inp = input("Input words, separated by AND OR NOT:")
     q = Query()
     try:
         res = q.union([s.strip() for s in inp.split('OR')])
