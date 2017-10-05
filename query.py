@@ -8,7 +8,12 @@ path = os.path.dirname(os.path.abspath(__file__))
 
 
 class Query(object):
-    def __init__(self):
+    def __init__(self, doc_dict_length):
+        """
+        doc_dict_length: length of doc_dict
+        dictionary: word dictionary
+        """
+        self.doc_dict_length = doc_dict_length
         with open("inverted_index.pkl", "rb") as in_file:
             self.dictionary = pickle.load(in_file)
 
@@ -56,10 +61,10 @@ class Query(object):
     def complement_list(self, alist):
         """
         NOT query
-        :param list: inverted index
+        :param alist: inverted index
         :return: [all index - index in list]
         """
-        return list(set(range(len(self.dictionary))) - set(alist))
+        return list(set(range(self.doc_dict_length)) - set(alist))
 
     def intersect(self, words):
         """
@@ -95,25 +100,45 @@ class Query(object):
 
         return res
 
-if __name__ == "__main__":
-    # path = input("Enter directory of /shakespeare_collection:")
-    # if not os.path.exists(path + '/shakespeare_collection'):
-    #     print("No Shakespeare's Collected Works found. Downloading from Internet...")
-    #     crawler = Crawler(path)
-    #     crawler.crawl()
-    # indexer = Indexer(path)
-    #     indexer.create_inverted_index()
-    # if not os.path.exists(path + '/inverted_index.pkl'):
-    #     indexer = Indexer(path)
-    #     indexer.create_inverted_index()
+
+def main():
     with open("doc_id.pkl", "rb") as in_file:
         doc_dictionary = pickle.load(in_file)
-    inp = input("Input words, separated by AND OR NOT:")
-    q = Query()
-    try:
-        res = q.union([s.strip() for s in inp.split('OR')])
-        print("result of '" + inp + "':")
-        for r in res:
-            print(doc_dictionary[r].replace(path, ''))
-    except KeyError:
-        print("wrong input!")
+    q = Query(len(doc_dictionary))
+    while True:
+        inp = input("Input words, separated by AND OR NOT, print q to exit:")
+        if inp == 'q':
+            return
+        try:
+            res = q.union([s.strip() for s in inp.split('OR')])
+            print("result of '" + inp + "':")
+            for r in res:
+                print(doc_dictionary[r].replace(path+'/shakespeare_collection', ''))
+            print()
+        except KeyError:
+            print("wrong input!")
+
+
+if __name__ == "__main__":
+    while True:
+        c = input("do you want to crawl Shakespeare's Collected Works? y/n: ")
+        if c == 'y':
+            print("Downloading from Internet...")
+            crawler = Crawler(path)
+            crawler.crawl()
+            indexer = Indexer(path)
+            indexer.create_inverted_index()
+            main()
+            break
+        elif c == 'n':
+            if not os.path.exists(path + '/shakespeare_collection'):
+                print("no Shakespeare's Collected Works!")
+                continue
+            if not os.path.exists(path + '/inverted_index.pkl'):
+                print("no index file, creating index...")
+                indexer = Indexer(path)
+                indexer.create_inverted_index()
+            main()
+            break
+        else:
+            print("wrong input!")

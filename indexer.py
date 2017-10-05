@@ -30,7 +30,6 @@ class Indexer(object):
         with open("doc_id.pkl", "wb") as out_file:
             pickle.dump(self.doc_id_dict, out_file)
 
-
     def separate_words(self, doc_id):
         """
         split the file to get a list of words
