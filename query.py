@@ -25,8 +25,8 @@ class Query(object):
         if 'AND' in s:
             return self.intersect([st.strip() for st in s.split('AND')])
         if 'NOT'in s:
-            return self.complement_list(self.dictionary[s.replace('NOT ', '')].get_index())
-        return self.dictionary[s].get_index()
+            return self.complement_list(self.dictionary[s.replace('NOT ', '').lower()].get_index())
+        return self.dictionary[s.lower()].get_index()
 
     def intersect_list(self, list1, list2):
         """
